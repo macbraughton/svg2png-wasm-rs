@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SVG to PNG Converter Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .input-section, .output-section {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        .controls {
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SVG to PNG Converter</h1>
+    <p>This example demonstrates the SVG to PNG conversion using the Rust + WebAssembly library.</p>
+    
+    <div class="container">
+        <div class="input-section">
+            <h3>Input SVG</h3>
+            <textarea id="svgInput" placeholder="Paste your SVG content here...">
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="80" fill="blue" stroke="black" stroke-width="2"/>
+    <text x="100" y="110" text-anchor="middle" fill="white" font-size="20">Hello SVG!</text>
+</svg></textarea>
+            
+            <div class="controls">
+                <label>
+                    Width: <input type="number" id="widthInput" placeholder="Auto" min="1">
+                </label>
+                <label>
+                    Height: <input type="number" id="heightInput" placeholder="Auto" min="1">
+                </label>
+                <label>
+                    Scale: <input type="number" id="scaleInput" placeholder="1.0" step="0.1" min="0.1" value="1.0">
+                </label>
+            </div>
+            
+            <button onclick="convertSvg()">Convert to PNG</button>
+        </div>
+        
+        <div class="output-section">
+            <h3>Output PNG</h3>
+            <div id="status">Click convert to generate PNG</div>
+            <img id="output" style="display:none;" alt="Converted PNG">
+            <div id="downloadLink" style="display:none;">
+                <a id="downloadAnchor" download="converted.png">Download PNG</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import init, { convert_svg_to_png, convert_svg_to_png_with_scale, get_svg_dimensions } from '../pkg/svg2png_wasm_rs.js';
+
+        let wasm;
+
+        async function initWasm() {
+            try {
+                wasm = await init();
+                document.getElementById('status').textContent = 'WASM module loaded successfully!';
+            } catch (error) {
+                console.error('Failed to initialize WASM:', error);
+                document.getElementById('status').textContent = 'Failed to load WASM module';
+            }
+        }
+
+        window.convertSvg = async function() {
+            if (!wasm) {
+                document.getElementById('status').textContent = 'WASM module not loaded yet';
+                return;
+            }
+
+            const svgContent = document.getElementById('svgInput').value;
+            const width = document.getElementById('widthInput').value;
+            const height = document.getElementById('heightInput').value;
+            const scale = parseFloat(document.getElementById('scaleInput').value) || 1.0;
+
+            if (!svgContent.trim()) {
+                document.getElementById('status').textContent = 'Please enter SVG content';
+                return;
+            }
+
+            try {
+                document.getElementById('status').textContent = 'Converting...';
+                
+                let pngBytes;
+                
+                if (scale !== 1.0) {
+                    pngBytes = convert_svg_to_png_with_scale(svgContent, scale);
+                } else {
+                    const w = width ? parseInt(width) : null;
+                    const h = height ? parseInt(height) : null;
+                    pngBytes = convert_svg_to_png(svgContent, w, h);
+                }
+
+                // Create a blob and display the image
+                const blob = new Blob([pngBytes], { type: 'image/png' });
+                const url = URL.createObjectURL(blob);
+                
+                const outputImg = document.getElementById('output');
+                outputImg.src = url;
+                outputImg.style.display = 'block';
+                
+                // Create download link
+                const downloadAnchor = document.getElementById('downloadAnchor');
+                downloadAnchor.href = url;
+                document.getElementById('downloadLink').style.display = 'block';
+                
+                // Get and display dimensions
+                const dimensions = get_svg_dimensions(svgContent);
+                document.getElementById('status').textContent = 
+                    `Conversion successful! Original SVG: ${dimensions.width.toFixed(1)}x${dimensions.height.toFixed(1)}px`;
+                
+            } catch (error) {
+                console.error('Conversion failed:', error);
+                document.getElementById('status').textContent = `Conversion failed: ${error.message}`;
+            }
+        };
+
+        // Initialize WASM when page loads
+        initWasm();
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "svg2png-wasm-rs",
+  "version": "0.1.0",
+  "description": "A Rust-based WebAssembly library for converting SVG to PNG, optimized for serverless environments",
+  "main": "pkg/svg2png_wasm_rs.js",
+  "types": "pkg/svg2png_wasm_rs.d.ts",
+  "files": [
+    "pkg"
+  ],
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir pkg",
+    "build:node": "wasm-pack build --target nodejs --out-dir pkg-node",
+    "build:bundler": "wasm-pack build --target bundler --out-dir pkg-bundler",
+    "build:all": "npm run build && npm run build:node && npm run build:bundler",
+    "test": "wasm-pack test --headless --firefox",
+    "serve": "python3 -m http.server 8000",
+    "example": "npm run build && npm run serve"
+  },
+  "keywords": [
+    "svg",
+    "png",
+    "wasm",
+    "webassembly",
+    "rust",
+    "serverless",
+    "cloudflare-workers",
+    "conversion",
+    "graphics"
+  ],
+  "author": "Don Hicks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/don-hicks/svg2png-wasm-rs.git"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0"
+  }
+}
