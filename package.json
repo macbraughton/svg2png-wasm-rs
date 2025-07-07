@@ -1,6 +1,6 @@
 {
   "name": "svg2png-wasm-rs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Rust-based WebAssembly library for converting SVG to PNG, optimized for serverless environments",
   "main": "pkg/svg2png_wasm_rs.js",
   "types": "pkg/svg2png_wasm_rs.d.ts",
