@@ -15,7 +15,7 @@ macro_rules! console_log {
 
 // Global allocator setup removed - using default allocator
 
-#[wasm_bindgen(start)]
+#[cfg_attr(not(test), wasm_bindgen(start))]
 pub fn main() {
     console_error_panic_hook::set_once();
 }
