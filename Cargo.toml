@@ -2,6 +2,8 @@
 name = "svg2png-wasm-rs"
 version = "0.1.1"
 edition = "2021"
+description = "A WASM-powered library to convert SVG markup into PNG images"
+license     = "MIT OR Apache-2.0"
 
 [lib]
 crate-type = ["cdylib"]
