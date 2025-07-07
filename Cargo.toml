@@ -9,7 +9,7 @@ homepage     = "https://github.com/don-hicks/svg2png-wasm-rs"
 documentation = "https://docs.rs/svg2png-wasm-rs"
 readme       = "README.md"
 keywords     = ["svg", "png", "wasm", "image", "conversion"]
-categories   = ["wasm", "image-processing"]
+categories   = ["wasm", "image_processing"]
 
 [lib]
 crate-type = ["cdylib"]
