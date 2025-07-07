@@ -20,7 +20,7 @@ A Rust-based WebAssembly (WASM) library that converts SVG (Scalable Vector Graph
 npm install svg2png-wasm-rs
 ```
 
-**Repository**: https://github.com/don-hicks/svg2png-wasm-rs
+**Repository**: https://www.npmjs.com/package/svg2png-wasm-rs
 
 ### **Crates.io**
 ```bash
